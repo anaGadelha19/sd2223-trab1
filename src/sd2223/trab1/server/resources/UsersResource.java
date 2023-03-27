@@ -1,7 +1,6 @@
 package sd2223.trab1.server.resources;
 
 
-
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,15 +28,15 @@ public class UsersResource implements UsersService {
         Log.info("createUser : " + user);
 
         // Check if user data is valid
-        if(user.getName() == null || user.getPwd() == null || user.getDisplayName() == null || user.getDomain() == null) {
+        if (user.getName() == null || user.getPwd() == null || user.getDisplayName() == null || user.getDomain() == null) {
             Log.info("User object invalid.");
-            throw new WebApplicationException( Status.BAD_REQUEST );
+            throw new WebApplicationException(Status.BAD_REQUEST);
         }
 
         // Insert user, checking if name already exists
-        if( users.putIfAbsent(user.getName(), user) != null ) {
+        if (users.putIfAbsent(user.getName(), user) != null) {
             Log.info("User already exists.");
-            throw new WebApplicationException( Status.CONFLICT );
+            throw new WebApplicationException(Status.CONFLICT);
         }
 
         return user.getName();
@@ -48,22 +47,22 @@ public class UsersResource implements UsersService {
         Log.info("getUser : user = " + name + "; pwd = " + pwd);
 
         // Check if user is valid
-        if(name == null || pwd == null) {
+        if (name == null || pwd == null) {
             Log.info("Name or Password null.");
-            throw new WebApplicationException( Status.BAD_REQUEST );
+            throw new WebApplicationException(Status.BAD_REQUEST);
         }
 
         User user = users.get(name);
         // Check if user exists
-        if( user == null ) {
+        if (user == null) {
             Log.info("User does not exist.");
-            throw new WebApplicationException( Status.NOT_FOUND );
+            throw new WebApplicationException(Status.NOT_FOUND);
         }
 
         //Check if the password is correct
-        if( !user.getPwd().equals( pwd)) {
+        if (!user.getPwd().equals(pwd)) {
             Log.info("Password is incorrect.");
-            throw new WebApplicationException( Status.FORBIDDEN );
+            throw new WebApplicationException(Status.FORBIDDEN);
         }
 
         return user;
@@ -72,10 +71,21 @@ public class UsersResource implements UsersService {
     @Override
     public User updateUser(String name, String pwd, User user) {
 
-        Log.info("updateUser : user = " + name + "; newUser = " + user
-        );
+        Log.info("updateUser : user = " + name + "; newUser = " + user);
+
         User oldUser = getUser(name, pwd);
-        users.put(oldUser.getName(), user);
+        if (oldUser != null) {
+            if (user.getName() != null)
+                oldUser.setName(user.getName());
+            if (user.getPwd() != null)
+                oldUser.setPwd(user.getPwd());
+            if (user.getDomain() != null)
+                oldUser.setDomain(user.getDomain());
+            if (user.getDisplayName() != null)
+                oldUser.setDisplayName(user.getDisplayName());
+
+            users.put(oldUser.getName(), oldUser);
+        }
 
         return oldUser;
 
