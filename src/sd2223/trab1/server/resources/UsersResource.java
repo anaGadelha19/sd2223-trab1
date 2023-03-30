@@ -73,30 +73,37 @@ public class UsersResource implements UsersService {
 
         Log.info("updateUser : user = " + name + "; newUser = " + user);
 
+        //getUser method checks the BAD_REQUEST, NOT_FOUND and FORBIDDEN exceptions
         User oldUser = getUser(name, pwd);
-        if (oldUser != null) {
-            if (user.getName() != null)
-                oldUser.setName(user.getName());
-            if (user.getPwd() != null)
-                oldUser.setPwd(user.getPwd());
-            if (user.getDomain() != null)
-                oldUser.setDomain(user.getDomain());
-            if (user.getDisplayName() != null)
-                oldUser.setDisplayName(user.getDisplayName());
 
-            users.put(oldUser.getName(), oldUser);
-        }
+        if (user.getName() != null)
+            oldUser.setName(user.getName());
+        if (user.getPwd() != null)
+            oldUser.setPwd(user.getPwd());
+        if (user.getDomain() != null)
+            oldUser.setDomain(user.getDomain());
+        if (user.getDisplayName() != null)
+            oldUser.setDisplayName(user.getDisplayName());
 
+        users.put(oldUser.getName(), oldUser);
+
+        //oldUser is now updated
         return oldUser;
-
         // TODO Auto-generated method stub
-
     }
 
     @Override
     public User deleteUser(String name, String pwd) {
+
+        Log.info("deleteUser : user = " + name);
+
+        //getUser method checks the BAD_REQUEST, NOT_FOUND and FORBIDDEN exceptions
+        User user = getUser(name, pwd);
+
+        users.remove(name);
+
+        return user;
         // TODO Auto-generated method stub
-        return null;
     }
 
     @Override
