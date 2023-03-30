@@ -4,6 +4,7 @@ package sd2223.trab1.server.resources;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 
@@ -16,7 +17,7 @@ import sd2223.trab1.api.rest.UsersService;
 @Singleton
 public class UsersResource implements UsersService {
 
-    private final Map<String, User> users = new HashMap<>();
+    private final Map<String, User> users = new ConcurrentHashMap<>();
 
     private static Logger Log = Logger.getLogger(UsersResource.class.getName());
 
@@ -103,7 +104,7 @@ public class UsersResource implements UsersService {
         users.remove(name);
 
         return user;
-        // TODO Auto-generated method stub
+        // TODO: Remove the feed and its messages
     }
 
     @Override
