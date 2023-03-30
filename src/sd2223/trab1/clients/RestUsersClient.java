@@ -6,6 +6,7 @@ import java.util.List;
 
 import jakarta.ws.rs.client.Entity;
 import jakarta.ws.rs.client.WebTarget;
+import jakarta.ws.rs.core.GenericType;
 import jakarta.ws.rs.core.MediaType;
 import jakarta.ws.rs.core.Response;
 import jakarta.ws.rs.core.Response.Status;
@@ -87,6 +88,22 @@ public class RestUsersClient extends RestClient implements UsersService {
 
     }
 
+    private List<User> clt_searchUsers(String pattern) {
+
+        Response r = target
+                .queryParam(UsersService.QUERY, pattern).request()
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+
+        if (r.getStatus() == Response.Status.OK.getStatusCode() && r.hasEntity()) {
+            return r.readEntity(new GenericType<List<User>>() {
+            });
+        } else {
+            System.out.println("Error, HTTP error status: " + r.getStatus());
+            return null;
+        }
+    }
+
     @Override
     public String createUser(User user) {
         return super.reTry(() -> clt_createUser(user));
@@ -109,9 +126,7 @@ public class RestUsersClient extends RestClient implements UsersService {
 
     @Override
     public List<User> searchUsers(String pattern) {
-
-        // TODO Auto-generated method stub
-        return null;
+        return super.reTry(() -> clt_searchUsers(pattern));
     }
 }
 

@@ -112,8 +112,8 @@ public class UsersResource implements UsersService {
 
         List<User> usersList = new LinkedList<>();
 
-        for(String userName: users.keySet()){
-            if(userName.toUpperCase().contains(pattern.toUpperCase())){
+        for (String userName : users.keySet()) {
+            if (userName.toUpperCase().contains(pattern.toUpperCase())) {
                 User user = users.get(userName);
                 usersList.add(user);
             }
