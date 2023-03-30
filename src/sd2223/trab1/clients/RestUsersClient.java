@@ -61,8 +61,24 @@ public class RestUsersClient extends RestClient implements UsersService {
                 .accept(MediaType.APPLICATION_JSON)
                 .put(Entity.entity(user, MediaType.APPLICATION_JSON));
 
-        if(r.getStatus() == Response.Status.OK.getStatusCode() && r.hasEntity()){
+        if (r.getStatus() == Response.Status.OK.getStatusCode() && r.hasEntity()) {
             System.out.println("Success, update user with name: " + name);
+            return r.readEntity(User.class);
+        } else {
+            System.out.println("Error, HTTP error status: " + r.getStatus());
+            return null;
+        }
+    }
+
+    private User clt_deleteUser(String name, String pwd) {
+
+        Response r = target.path(name)
+                .queryParam(UsersService.PWD, pwd).request()
+                .accept(MediaType.APPLICATION_JSON)
+                .delete();
+
+        if (r.getStatus() == Response.Status.OK.getStatusCode() && r.hasEntity()) {
+            System.out.println("Success, deleted user with name: " + name);
             return r.readEntity(User.class);
         } else {
             System.out.println("Error, HTTP error status: " + r.getStatus());
@@ -88,8 +104,7 @@ public class RestUsersClient extends RestClient implements UsersService {
 
     @Override
     public User deleteUser(String name, String pwd) {
-        // TODO Auto-generated method stub
-        return null;
+        return super.reTry(() -> clt_deleteUser(name, pwd));
     }
 
     @Override
