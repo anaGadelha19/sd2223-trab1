@@ -2,6 +2,7 @@ package sd2223.trab1.server.resources;
 
 
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -77,8 +78,6 @@ public class UsersResource implements UsersService {
         //getUser method checks the BAD_REQUEST, NOT_FOUND and FORBIDDEN exceptions
         User oldUser = getUser(name, pwd);
 
-        if (user.getName() != null)
-            oldUser.setName(user.getName());
         if (user.getPwd() != null)
             oldUser.setPwd(user.getPwd());
         if (user.getDomain() != null)
@@ -96,7 +95,7 @@ public class UsersResource implements UsersService {
     @Override
     public User deleteUser(String name, String pwd) {
 
-        Log.info("deleteUser : user = " + name);
+        Log.info("deleteUser : user = " + name + "; pwd = " + pwd);
 
         //getUser method checks the BAD_REQUEST, NOT_FOUND and FORBIDDEN exceptions
         User user = getUser(name, pwd);
@@ -109,8 +108,18 @@ public class UsersResource implements UsersService {
 
     @Override
     public List<User> searchUsers(String pattern) {
-        // TODO Auto-generated method stub
-        return null;
+
+        Log.info("searchUsers : user = " + pattern);
+
+        List<User> usersList = new LinkedList<>();
+
+        for(String userName: users.keySet()){
+            if(userName.toUpperCase().contains(pattern.toUpperCase())){
+                User user = users.get(userName);
+                usersList.add(user);
+            }
+        }
+        return usersList;
     }
 
 }
