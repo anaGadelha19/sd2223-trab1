@@ -24,15 +24,17 @@ public class UsersServer {
 
     public static void main(String[] args) {
         try {
-
+            //Used to register resources in a server
             ResourceConfig config = new ResourceConfig();
             config.register(UsersResource.class);
             // config.register(CustomLoggingFilter.class);
 
             String ip = InetAddress.getLocalHost().getHostAddress();
             String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
+            //Launches HTTP server in a separate thread
             JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
 
+            //TODO: Add Discovery
             Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));
 
             // More code can be executed here...
