@@ -8,10 +8,7 @@ import java.net.InetSocketAddress;
 import java.net.MulticastSocket;
 import java.net.NetworkInterface;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -55,13 +52,13 @@ class DiscoveryImpl implements Discovery {
 
     private static Logger Log = Logger.getLogger(Discovery.class.getName());
 
-    // The pre-aggreed multicast endpoint assigned to perform discovery.
+    // The pre-agreed multicast endpoint assigned to perform discovery.
 
     static final int DISCOVERY_RETRY_TIMEOUT = 5000;
     static final int DISCOVERY_ANNOUNCE_PERIOD = 1000;
 
     // Replace with appropriate values...
-    static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("XXX.XXX.XXX.XXX", -1);
+    static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
 
     // Used separate the two fields that make up a service announcement.
     private static final String DELIMITER = "\t";
@@ -70,7 +67,7 @@ class DiscoveryImpl implements Discovery {
 
     private static Discovery singleton;
 
-    private Map<String, List<URI>> storedAnouncements;
+    private Map<String, URI[]> knownURIs;
 
     //synchronized -> it makes sure that even with multiple threads we can mantain the singleton pattern
     synchronized static Discovery getInstance() {
@@ -82,10 +79,10 @@ class DiscoveryImpl implements Discovery {
 
     private DiscoveryImpl() {
         this.startListener();
-        storedAnouncements = new HashMap<>();
+        knownURIs = new HashMap<>();
     }
 
-    // it announces periodically to the IP muticast group and port
+    // it announces periodically to the IP multicast group and port
     @Override
     public void announce(String serviceName, String serviceURI) {
         Log.info(String.format("Starting Discovery announcements on: %s for: %s -> %s\n", DISCOVERY_ADDR, serviceName,
@@ -116,8 +113,9 @@ class DiscoveryImpl implements Discovery {
     @Override
     public URI[] knownUrisOf(String serviceName, int minEntries) throws InterruptedException {
         //TODO: use stored announcements, waiting information
-        if (storedAnouncements.containsKey(serviceName)) {
-
+        if (knownURIs.containsKey(serviceName)) {
+            URI[] knownUris = knownURIs.get(serviceName);
+            return knownUris;
         } else {
             Thread.sleep(DISCOVERY_RETRY_TIMEOUT);
         }
@@ -144,15 +142,18 @@ class DiscoveryImpl implements Discovery {
                             // TODO: complete by storing the decoded announcements...
                             var serviceName = parts[0];
                             var uri = URI.create(parts[1]);
-                            List<URI> tmp;
 
-                            if (storedAnouncements.containsKey((serviceName))) {
-                                tmp = storedAnouncements.get(serviceName);
+                            if (knownURIs.containsKey((serviceName))) {
+                                List<URI> serverURI = new LinkedList<>();
+                                serverURI.add(uri);
+                                knownURIs.put(serviceName,serverURI.toArray(new URI[10]));
                             } else {
-                                tmp = new ArrayList<>();
+                               URI[] serverURI = knownUrisOf(serviceName, 10); //IDK what i the stupid minEntries TODO
+                                serverURI[serverURI.length-1] = uri;
+                                knownURIs.put(serviceName,serverURI);
+
                             }
-                            tmp.add(uri);
-                            storedAnouncements.put(serviceName, tmp);
+
                         }
                         // Alter??
                     } catch (Exception x) {
