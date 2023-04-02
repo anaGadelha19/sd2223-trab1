@@ -1,4 +1,9 @@
 package sd2223.trab1.api;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
+
 /**
  * Represents a user in the system. Note: the password of a user should not be
  * returned in any method.

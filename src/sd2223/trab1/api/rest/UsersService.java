@@ -94,4 +94,13 @@ public interface UsersService {
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)
 	List<User> searchUsers(@QueryParam(QUERY) String pattern);
+
+	/**
+	 *
+	 * Returns true if the user exists
+	 *
+	 * @param user user of the operation (format user@domain)
+	 * @return true if the user exists
+	 */
+	boolean hasUser(String user);
 }

@@ -121,5 +121,11 @@ public class UsersResource implements UsersService {
         return usersList;
     }
 
+    @Override
+    public boolean hasUser(String user) {
+        String[] aux = user.split("@");
+        return users.get(aux[0]) != null;
+    }
+
 }
 

@@ -2,6 +2,7 @@ package sd2223.trab1.server;
 
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.logging.Logger;
 
@@ -13,6 +14,8 @@ import sd2223.trab1.server.resources.UsersResource;
 public class UsersServer {
 
     private static Logger Log = Logger.getLogger(UsersServer.class.getName());
+    
+    static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
 
     static {
         System.setProperty("java.net.preferIPv4Stack", "true");

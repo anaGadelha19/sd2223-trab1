@@ -128,5 +128,11 @@ public class RestUsersClient extends RestClient implements UsersService {
     public List<User> searchUsers(String pattern) {
         return super.reTry(() -> clt_searchUsers(pattern));
     }
+
+    @Override
+    public boolean hasUser(String user) {
+        // TODO: O QUE FAZER AQUI??
+        return false;
+    }
 }
 

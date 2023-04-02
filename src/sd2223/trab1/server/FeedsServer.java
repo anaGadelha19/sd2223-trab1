@@ -2,10 +2,12 @@ package sd2223.trab1.server;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import sd2223.trab1.Discovery;
 import sd2223.trab1.server.resources.FeedsResource;
 
 
 import java.net.InetAddress;
+import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.logging.Logger;
 
@@ -15,6 +17,9 @@ public class FeedsServer {
     //TODO: Probably like the usersServer but I have to see
 
     private static Logger Log = Logger.getLogger(sd2223.trab1.server.UsersServer.class.getName());
+
+    static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
+    public static Discovery discovery;
 
     static {
         System.setProperty("java.net.preferIPv4Stack", "true");
