@@ -1,22 +1,20 @@
-package sd2223.trab1.server;
+package sd2223.trab1.server.rest;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
 import sd2223.trab1.Discovery;
-import sd2223.trab1.server.resources.FeedsResource;
-
 
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.logging.Logger;
 
+public class RestFeedsServer {
 
-public class FeedsServer {
 
     //TODO: Probably like the usersServer but I have to see
 
-    private static Logger Log = Logger.getLogger(sd2223.trab1.server.UsersServer.class.getName());
+    private static Logger Log = Logger.getLogger(RestFeedsServer.class.getName());
 
     static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
     public static Discovery discovery;
@@ -33,14 +31,13 @@ public class FeedsServer {
         try {
             //Used to register resources in a server
             ResourceConfig config = new ResourceConfig();
-            config.register(FeedsResource.class);
+            config.register(RestFeedsServer.class);
             // config.register(CustomLoggingFilter.class);
 
             String ip = InetAddress.getLocalHost().getHostAddress();
             String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
             //Launches HTTP server in a separate thread
             JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
-
 
 
             //TODO: Add Discovery

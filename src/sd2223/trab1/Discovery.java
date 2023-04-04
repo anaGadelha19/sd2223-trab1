@@ -148,7 +148,7 @@ class DiscoveryImpl implements Discovery {
                                 serverURI.add(uri);
                                 knownURIs.put(serviceName,serverURI.toArray(new URI[10]));
                             } else {
-                               URI[] serverURI = knownUrisOf(serviceName, 10); //IDK what i the stupid minEntries TODO
+                               URI[] serverURI = knownUrisOf(serviceName, 10); //IDK what is the stupid minEntries TODO
                                 serverURI[serverURI.length-1] = uri;
                                 knownURIs.put(serviceName,serverURI);
 

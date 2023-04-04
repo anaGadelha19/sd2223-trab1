@@ -1,4 +1,7 @@
-package sd2223.trab1.server;
+package sd2223.trab1.server.rest;
+
+import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
+import org.glassfish.jersey.server.ResourceConfig;
 
 
 import java.net.InetAddress;
@@ -6,15 +9,11 @@ import java.net.InetSocketAddress;
 import java.net.URI;
 import java.util.logging.Logger;
 
-import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
-import org.glassfish.jersey.server.ResourceConfig;
+public class RestUsersServer {
 
-import sd2223.trab1.server.resources.UsersResource;
 
-public class UsersServer {
+    private static Logger Log = Logger.getLogger(RestUsersServer.class.getName());
 
-    private static Logger Log = Logger.getLogger(UsersServer.class.getName());
-    
     static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
 
     static {
@@ -29,7 +28,7 @@ public class UsersServer {
         try {
             //Used to register resources in a server
             ResourceConfig config = new ResourceConfig();
-            config.register(UsersResource.class);
+            config.register(RestUsersServer.class);
             // config.register(CustomLoggingFilter.class);
 
             String ip = InetAddress.getLocalHost().getHostAddress();
@@ -46,4 +45,6 @@ public class UsersServer {
         }
     }
 }
+
+
 

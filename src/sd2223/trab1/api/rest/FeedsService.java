@@ -42,7 +42,7 @@ public interface FeedsService {
 	@Path("/{" + USER + "}")
 	@Consumes(MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	long postMessage(@PathParam(USER) String user, @QueryParam(PWD) String pwd, Message msg);
+	long postMessage(@PathParam(USER) String user, @QueryParam(PWD) String pwd, Message msg) throws InterruptedException;
 
 	/**
 	 * Removes the message identified by mid from the feed of user.
