@@ -34,7 +34,8 @@ public class RestUsersServer {
             String ip = InetAddress.getLocalHost().getHostAddress();
             String serverURI = String.format(SERVER_URI_FMT, ip, PORT);
             //Launches HTTP server in a separate thread
-            JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
+            JdkHttpServerFactory.createHttpServer(URI.create(serverURI.replace(ip, "0.0.0.0")), config);
+
 
             //TODO: Add Discovery
             Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));

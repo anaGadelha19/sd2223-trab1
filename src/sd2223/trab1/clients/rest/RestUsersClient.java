@@ -33,10 +33,10 @@ public class RestUsersClient extends RestClient implements Users {
 
         if (r.getStatus() == Status.OK.getStatusCode() && r.hasEntity())
             return super.toJavaResult(r, String.class);
-        else
+        else {
             System.out.println("Error, HTTP error status: " + r.getStatus());
-
-        return null;
+            return Result.error(getErrorCodeFrom(r.getStatus())); //????TODO: THIS WAY OR THE OTHER?
+        }
     }
 
     private Result<User> clt_getUser(String name, String pwd) {
@@ -96,7 +96,8 @@ public class RestUsersClient extends RestClient implements Users {
                 .get();
 
         if (r.getStatus() == Response.Status.OK.getStatusCode() && r.hasEntity()) {
-            return r.readEntity(new GenericType<>(){});
+            return r.readEntity(new GenericType<Result<List<User>>>() {
+            });
         } else {
             System.out.println("Error, HTTP error status: " + r.getStatus());
             return null;

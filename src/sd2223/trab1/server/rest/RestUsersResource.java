@@ -11,7 +11,7 @@ import sd2223.trab1.server.java.JavaUsers;
 
 @Singleton
 public class RestUsersResource extends RestResource implements UsersService {
-//TODO: Complete this class
+    //TODO: Check hasUsers idk
     final Users impl;
 
     public RestUsersResource() {
@@ -35,22 +35,22 @@ public class RestUsersResource extends RestResource implements UsersService {
 
     @Override
     public User updateUser(String name, String pwd, User user) {
-        throw new RuntimeException("Not Implemented...");
+        return super.fromJavaResult(impl.updateUser(name, pwd, user));
     }
 
     @Override
     public User deleteUser(String name, String pwd) {
-        throw new RuntimeException("Not Implemented...");
+        return super.fromJavaResult(impl.deleteUser(name, pwd));
     }
 
     @Override
     public List<User> searchUsers(String pattern) {
-        throw new RuntimeException("Not Implemented...");
+        return super.fromJavaResult(impl.searchUsers(pattern));
     }
 
     @Override
     public boolean hasUser(String user) {
-        return false;
+        return impl.hasUser(user);
     }
 
 
