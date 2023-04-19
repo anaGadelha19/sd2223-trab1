@@ -18,6 +18,7 @@ public class UsersClientFactory {
 
     public static Users get(URI serverURI) {
         var uriString = serverURI.toString(); //use discovery to find it
+        //TODO: idk how THIS SHIT IS DONE
 
         if (uriString.endsWith(REST))
             return new RestUsersClient(serverURI);

@@ -2,6 +2,7 @@ package sd2223.trab1.server.rest;
 
 import org.glassfish.jersey.jdkhttp.JdkHttpServerFactory;
 import org.glassfish.jersey.server.ResourceConfig;
+import sd2223.trab1.Discovery;
 
 
 import java.net.InetAddress;
@@ -19,6 +20,8 @@ public class RestUsersServer {
     static {
         System.setProperty("java.net.preferIPv4Stack", "true");
     }
+
+    public static Discovery discovery;
 
     public static final int PORT = 8080;
     public static final String SERVICE = "UsersService";

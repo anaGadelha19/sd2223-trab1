@@ -1,18 +1,14 @@
 package sd2223.trab1;
 
 
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.InetSocketAddress;
-import java.net.MulticastSocket;
-import java.net.NetworkInterface;
-import java.net.URI;
-import java.util.*;
+import java.net.*;
+import java.util.Map;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.logging.Logger;
 
 /**
- * <p>A class interface to perform service discovery based on periodic
+ * <p> A class interface to perform service discovery based on periodic
  * announcements over multicast communication.</p>
  */
 
@@ -48,7 +44,7 @@ public interface Discovery {
 /**
  * Implementation of the multicast discovery service
  */
-class DiscoveryImpl implements Discovery {
+ class DiscoveryImpl implements Discovery {
 
     private static Logger Log = Logger.getLogger(Discovery.class.getName());
 
@@ -67,7 +63,7 @@ class DiscoveryImpl implements Discovery {
 
     private static Discovery singleton;
 
-    private Map<String, URI[]> knownURIs;
+    private Map<String, Set<URI>> knownURIs;
 
     //synchronized -> it makes sure that even with multiple threads we can mantain the singleton pattern
     synchronized static Discovery getInstance() {
@@ -79,7 +75,7 @@ class DiscoveryImpl implements Discovery {
 
     private DiscoveryImpl() {
         this.startListener();
-        knownURIs = new HashMap<>();
+        knownURIs = new ConcurrentHashMap<>();
     }
 
     // it announces periodically to the IP multicast group and port
@@ -113,13 +109,21 @@ class DiscoveryImpl implements Discovery {
     @Override
     public URI[] knownUrisOf(String serviceName, int minEntries) throws InterruptedException {
         //TODO: use stored announcements, waiting information
-        if (knownURIs.containsKey(serviceName)) {
-            URI[] knownUris = knownURIs.get(serviceName);
-            return knownUris;
-        } else {
-            Thread.sleep(DISCOVERY_RETRY_TIMEOUT);
+        for (; ; ) {
+            var results = knownURIs.get(serviceName);
+
+            if (results != null && results.size() >= minEntries)
+                return results.toArray(new URI[results.size()]);
+
+            else
+                try {
+                    Thread.sleep(DISCOVERY_RETRY_TIMEOUT);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
         }
-        return null;
+
     }
 
     private void startListener() {
@@ -139,20 +143,12 @@ class DiscoveryImpl implements Discovery {
 
                         var parts = msg.split(DELIMITER);
                         if (parts.length == 2) {
-                            // TODO: complete by storing the decoded announcements...
+
                             var serviceName = parts[0];
                             var uri = URI.create(parts[1]);
 
-                            if (knownURIs.containsKey((serviceName))) {
-                                List<URI> serverURI = new LinkedList<>();
-                                serverURI.add(uri);
-                                knownURIs.put(serviceName,serverURI.toArray(new URI[10]));
-                            } else {
-                               URI[] serverURI = knownUrisOf(serviceName, 10); //IDK what is the stupid minEntries TODO
-                                serverURI[serverURI.length-1] = uri;
-                                knownURIs.put(serviceName,serverURI);
+                            knownURIs.computeIfAbsent(serviceName, (k) -> ConcurrentHashMap.newKeySet()).add(uri);
 
-                            }
 
                         }
                         // Alter??
