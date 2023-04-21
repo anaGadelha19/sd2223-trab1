@@ -25,13 +25,14 @@ public class RestUsersServer {
 
     public static final int PORT = 8080;
     public static final String SERVICE = "UsersService";
+    public static final String SERVICE_NAME = "users";
     private static final String SERVER_URI_FMT = "http://%s:%s/rest";
 
     public static void main(String[] args) {
         try {
             //Used to register resources in a server
             ResourceConfig config = new ResourceConfig();
-            config.register(RestUsersServer.class);
+            config.register(RestUsersResource.class);
             // config.register(CustomLoggingFilter.class);
 
             String ip = InetAddress.getLocalHost().getHostAddress();
@@ -43,6 +44,10 @@ public class RestUsersServer {
             //TODO: Add Discovery
             Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));
 
+
+            //discovery = new Discovery(new InetSocketAddress("227.227.227.227", 2277), SERVICE_NAME, serverURI);
+            //discovery.announce(serviceName, serviceURI);
+            //discovery.();
             // More code can be executed here...
         } catch (Exception e) {
             Log.severe(e.getMessage());

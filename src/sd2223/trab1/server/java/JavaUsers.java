@@ -79,8 +79,18 @@ public class JavaUsers  implements Users {
 
             Log.info("updateUser : user = " + name + "; newUser = " + user);
 
+            if(!user.getName().equals(name))
+                return Result.error(ErrorCode.BAD_REQUEST);
+
+            User oldUser;
             //getUser method checks the BAD_REQUEST, NOT_FOUND and FORBIDDEN exceptions
-            User oldUser = (User) getUser(name, pwd); //Cast ??
+            Result<User> getRes = getUser(name, pwd);
+
+            if(getRes.isOK())
+                oldUser = getRes.value();
+            else
+                return getRes;
+
 
             if (user.getPwd() != null)
                 oldUser.setPwd(user.getPwd());
@@ -101,8 +111,14 @@ public class JavaUsers  implements Users {
 
             Log.info("deleteUser : user = " + name + "; pwd = " + pwd);
 
+            User user;
             //getUser method checks the BAD_REQUEST, NOT_FOUND and FORBIDDEN exceptions
-            User user = (User) getUser(name, pwd); //Cast??
+            Result<User> getRes = getUser(name, pwd);
+
+            if(getRes.isOK())
+                user = getRes.value();
+            else
+                return getRes;
 
             users.remove(name);
 
