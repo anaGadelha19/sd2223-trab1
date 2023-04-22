@@ -47,7 +47,7 @@ public class RestUsersServer {
 
             //discovery = new Discovery(new InetSocketAddress("227.227.227.227", 2277), SERVICE_NAME, serverURI);
             //discovery.announce(serviceName, serviceURI);
-            //discovery.();
+            //discovery.;
             // More code can be executed here...
         } catch (Exception e) {
             Log.severe(e.getMessage());

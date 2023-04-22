@@ -31,7 +31,7 @@ public class RestFeedsServer {
         try {
             //Used to register resources in a server
             ResourceConfig config = new ResourceConfig();
-            config.register(RestFeedsServer.class);
+            config.register(RestFeedsResource.class);
             // config.register(CustomLoggingFilter.class);
 
             String ip = InetAddress.getLocalHost().getHostAddress();

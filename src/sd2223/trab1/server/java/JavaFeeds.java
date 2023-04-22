@@ -30,7 +30,7 @@ public class JavaFeeds implements Feeds {
 
     private static Logger Log = Logger.getLogger(RestUsersServer.class.getName());
 
-    private JavaUsers usrRes = new JavaUsers();
+    private JavaUsers usrRes = new JavaUsers(); // sera assim??
 
     private AtomicLong messagesIdGenerator = new AtomicLong(0);
 
@@ -45,12 +45,23 @@ public class JavaFeeds implements Feeds {
 
         String[] userSplit = user.split("@");
 
-        User u = (User) usrRes.getUser(userSplit[0], pwd); // Cast??
+        User u;
+        Result<User> getRes = usrRes.getUser(userSplit[0], pwd);
+        if(getRes.isOK())
+            u = getRes.value();
+        else{
+            Log.info("User does not exist.");
+            return Result.error(ErrorCode.FORBIDDEN);
+        }
 
-        if (!userSplit[1].equals(msg.getDomain())) {
+        if(!u.getPwd().equals(pwd)){
             Log.info("Password is incorrect.");
             return Result.error(ErrorCode.FORBIDDEN);
+        }
 
+        if (!userSplit[1].equals(msg.getDomain())) {
+            Log.info("User does not exist in this domain.");
+            return Result.error(ErrorCode.FORBIDDEN);
         }
 
         long mid = messagesIdGenerator.incrementAndGet();
@@ -85,7 +96,7 @@ public class JavaFeeds implements Feeds {
     public Result<Message> getMessage(String user, long mid) {
         Log.info("getMessage : user = " + user + "; messageId = " + mid);
 
-        if (!usrRes.hasUser(user)) {
+        if (!usrRes.hasUser(user)) { // sera assim??
             Log.info("User does not exist.");
             return Result.error(ErrorCode.NOT_FOUND);
 
