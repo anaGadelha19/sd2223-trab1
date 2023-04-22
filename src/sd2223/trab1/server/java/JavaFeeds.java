@@ -1,5 +1,6 @@
 package sd2223.trab1.server.java;
 
+
 import sd2223.trab1.Discovery;
 import sd2223.trab1.api.Message;
 import sd2223.trab1.api.User;
@@ -10,7 +11,6 @@ import sd2223.trab1.server.rest.RestUsersServer;
 import sd2223.trab1.api.java.Result.ErrorCode;
 
 
-import java.net.URI;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -34,7 +34,7 @@ public class JavaFeeds implements Feeds {
 
     private AtomicLong messagesIdGenerator = new AtomicLong(0);
 
-    private RestUsersClient restUsersClient;
+    private RestUsersClient restUsersClient; // TODO: add get ethod from factory
 
     private Discovery discovery = Discovery.getInstance();
 

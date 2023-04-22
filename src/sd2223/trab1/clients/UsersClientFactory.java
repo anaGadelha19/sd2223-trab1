@@ -17,8 +17,7 @@ public class UsersClientFactory {
     private Discovery discovery = Discovery.getInstance();
 
     public static Users get(URI serverURI) {
-        var uriString = serverURI.toString(); //use discovery to find it
-        //TODO: idk how THIS SHIT IS DONE
+        var uriString = serverURI.toString();
 
         if (uriString.endsWith(REST))
             return new RestUsersClient(serverURI);
