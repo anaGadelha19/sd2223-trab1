@@ -45,7 +45,7 @@ public class JavaFeeds implements Feeds {
         this.discovery = discovery;
 
         URI[] usersUris = discovery.knownUrisOf(serviceName, 5);
-        users = UsersClientFactory.get(usersUris[0]);
+        users = UsersClientFactory.getUserService(usersUris[0]);
     }
 
     @Override

@@ -11,6 +11,8 @@ import sd2223.trab1.api.soap.UsersException;
 import sd2223.trab1.api.soap.UsersService;
 import sd2223.trab1.server.java.JavaUsers;
 
+
+
 @WebService(serviceName = UsersService.NAME, targetNamespace = UsersService.NAMESPACE, endpointInterface = UsersService.INTERFACE)
 public class SoapUsersWebService extends SoapWebService<UsersException> implements UsersService {
 
@@ -20,7 +22,7 @@ public class SoapUsersWebService extends SoapWebService<UsersException> implemen
 
     public SoapUsersWebService() {
         super((result) -> new UsersException(result.error().toString()));
-        this.impl = new JavaUsers();
+        this.impl = new JavaUsers(UsersService.NAME, SoapUsersServer.discovery);
     }
 
     @Override

@@ -21,7 +21,6 @@ public class RestUsersServer {
         System.setProperty("java.net.preferIPv4Stack", "true");
     }
 
-    public static Discovery discovery;
 
     public static final int PORT = 8080;
     public static final String SERVICE = "UsersService";
@@ -44,9 +43,8 @@ public class RestUsersServer {
             //TODO: Add Discovery
             Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));
 
-            Discovery.getInstance().announce(SERVICE, serverURI);
-            //discovery.announce(serviceName, serviceURI);
-            //discovery.;
+            Discovery.getInstance().announce(SERVICE_NAME, serverURI);
+
             // More code can be executed here...
         } catch (Exception e) {
             Log.severe(e.getMessage());

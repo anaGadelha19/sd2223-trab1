@@ -13,7 +13,7 @@ public interface UsersService {
 
     static final String NAME = "users";
     static final String NAMESPACE = "http://sd2223";
-    static final String INTERFACE = "aula5.api.soap.UsersService";
+    static final String INTERFACE = "sd2223.trab1.api.soap.UsersService";
 
     /**
      * Creates a new user identified by name.
@@ -36,7 +36,7 @@ public interface UsersService {
 
     /**
      * Modifies the information of a user. Values of null in any field of the user will be
-     * considered as if the the fields is not to be modified (the id cannot be modified).
+     * considered as if  the fields is not to be modified (the id cannot be modified).
      *
      * @param name name of the user
      * @param pwd  password of the user

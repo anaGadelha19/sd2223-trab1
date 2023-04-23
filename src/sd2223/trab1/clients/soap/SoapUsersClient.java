@@ -19,8 +19,7 @@ public class SoapUsersClient extends SoapClient implements Users {
     public SoapUsersClient(URI serverURI) {
         super(serverURI);
     }
-
-
+    
     private UsersService stub;
 
     synchronized private UsersService stub() {
