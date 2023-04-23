@@ -16,7 +16,7 @@ public class SoapFeedsWebService extends SoapWebService<FeedsException> implemen
 
     public SoapFeedsWebService() throws InterruptedException {
         super((result) -> new FeedsException(result.error().toString()));
-        this.impl = new JavaFeeds(FeedsService.NAME, SoapFeedsServer.discovery);
+        this.impl = new JavaFeeds(SoapUsersServer.SERVICE_NAME, SoapFeedsServer.discovery);
 
     }
 

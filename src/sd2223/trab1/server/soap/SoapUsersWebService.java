@@ -22,7 +22,7 @@ public class SoapUsersWebService extends SoapWebService<UsersException> implemen
 
     public SoapUsersWebService() {
         super((result) -> new UsersException(result.error().toString()));
-        this.impl = new JavaUsers(UsersService.NAME, SoapUsersServer.discovery);
+        this.impl = new JavaUsers(SoapFeedsServer.SERVICE_NAME, SoapUsersServer.discovery);
     }
 
     @Override
