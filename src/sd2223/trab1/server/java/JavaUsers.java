@@ -151,20 +151,6 @@ public class JavaUsers implements Users {
         return Result.ok(usersList);
     }
 
-   /* @Override
-    public Result<User> getUserByName(String name) {
-        Log.info("getUser : user = " + name);
-
-        User user = users.get(name);
-
-        if (user == null) {// Check if user exists
-            Log.info("User does not exist.");
-            return Result.error(ErrorCode.NOT_FOUND);
-        } else {
-            return Result.ok(user);
-        }
-
-    }*/
 
     //  @Override
    private boolean hasUser(String user) {

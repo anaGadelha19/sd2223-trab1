@@ -58,8 +58,8 @@ public class JavaFeeds implements Feeds {
         User u;
         Result<User> getRes = users.getUser(userSplit[0], pwd);
 
-        //  TODO: VERIFY this
-        if (getRes == null || !getRes.isOK()) {//TODO: verify if user exists? ????
+        //TODO: verify if user exists? ????
+        if (getRes == null || !getRes.isOK()) {
             Log.info("User does not exist.");
             return Result.error(ErrorCode.FORBIDDEN);
         } else {
@@ -82,6 +82,7 @@ public class JavaFeeds implements Feeds {
         Message newMsg = new Message(mid, userSplit[0], userSplit[1], msg.getText());
 
         addMessageToFeed(user, mid, newMsg);
+
 
         if (subscribers.get(u) != null) {
             for (String sub : subscribers.get(u)) {
@@ -150,7 +151,7 @@ public class JavaFeeds implements Feeds {
     @Override
     public Result<Message> getMessage(String user, long mid) {
         Log.info("getMessage : user = " + user + "; messageId = " + mid);
-//TODO: verify if user exists?
+        //TODO: verify if user exists?
         if (feeds.get(user) == null) {
             Log.info("User does not exist.");
             return Result.error(ErrorCode.NOT_FOUND);
@@ -170,21 +171,27 @@ public class JavaFeeds implements Feeds {
     @Override
     public Result<List<Message>> getMessages(String user, long time) {
         Log.info("getMessages : user = " + user + "; time = " + time);
-//TODO: verify if user exists?
+        //TODO: verify if user exists?
         //TODO: I do not know if it is 100% in accordance with what is requested
         if (feeds.get(user) == null) {
             Log.info("User either does not exist or has no messages.");
             return Result.error(ErrorCode.NOT_FOUND);
 
         }
-
         List<Message> msgList = new LinkedList<>();
+        if(feeds.get(user).isEmpty()){
+            return Result.ok(msgList);
+        }
+
+
+        Log.info("FEEEDSSS " + feeds.get(user).values());
+        Log.info("EMPTY LISTTTT" + msgList);
         for (Message msg : feeds.get(user).values()) {
             if (msg.getCreationTime() >= time) {
                 msgList.add(msg);
             }
         }
-
+        Log.info("FULLLLLLL LISTTTT" + msgList);
         return Result.ok(msgList);
     }
 
@@ -214,10 +221,11 @@ public class JavaFeeds implements Feeds {
         }
 
         //If user to be subscribed does not exist //TODO: verify this
-       /* if (users.getUserByName(userSub) == null) {
-            Log.info("User to be subscribe does not exist.");TODO: verify if user exists?
-            return Result.error(ErrorCode.FORBIDDEN);
-        }*/
+      /*if(!hasUser(userSub)){
+          Log.info("User does not exist.");
+          return Result.error(ErrorCode.FORBIDDEN);
+
+      }*/
 
         // Add to the map of the users that subscribed the userSub
         if (subscribedTo.get(user) != null) {
@@ -266,10 +274,18 @@ public class JavaFeeds implements Feeds {
             Log.info("User does not exist.");
             return Result.error(ErrorCode.FORBIDDEN);
         }
+
 */
         if (subscribedTo.get(user) == null) {
+            LinkedList<String> newList = new LinkedList<>();
+            subscribedTo.put(user, newList);
+
+        }
+        if (subscribedTo.get(user).isEmpty()) {
             Log.info("User does not have subscribers.");
+            Log.info("EMPTYYYY STUFFFF" + subscribedTo.get(user));
             return Result.ok(subscribedTo.get(user));
+
         }
 
         return Result.ok(subscribedTo.get(user));
@@ -285,7 +301,7 @@ public class JavaFeeds implements Feeds {
         Log.info("final User = " + users.getUser(user, ""));
 
         var result = users.getUser(user, "");
-        return result.error() == ErrorCode.FORBIDDEN;
+        return result.error() != ErrorCode.FORBIDDEN;
     }
 }
 
