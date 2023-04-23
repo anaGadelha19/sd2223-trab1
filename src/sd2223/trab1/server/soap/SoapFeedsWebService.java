@@ -1,3 +1,4 @@
+
 package sd2223.trab1.server.soap;
 
 import sd2223.trab1.api.Message;
@@ -6,7 +7,6 @@ import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.soap.FeedsException;
 import sd2223.trab1.api.soap.FeedsService;
 import sd2223.trab1.server.java.JavaFeeds;
-
 
 import java.util.List;
 
@@ -45,9 +45,10 @@ public class SoapFeedsWebService extends SoapWebService<FeedsException> implemen
         return super.fromJavaResult(impl.getMessages(user, time));
     }
 
+
     @Override
     public void subUser(String user, String userSub, String pwd) throws FeedsException {
-        super.fromJavaResult(impl.subUser(user, userSub, pwd));
+        //super.fromJavaResult(impl.subUser(user, userSub, pwd));
     }
 
     @Override
@@ -60,3 +61,4 @@ public class SoapFeedsWebService extends SoapWebService<FeedsException> implemen
         return super.fromJavaResult(impl.listSubs(user));
     }
 }
+

@@ -28,7 +28,7 @@ public class RestFeedsServer {
     public static final String SERVICE_NAME = "feeds";
     private static final String SERVER_URI_FMT = "http://%s:%s/rest";
 
-    public static Discovery discovery = null;
+    public static Discovery discovery;
 
     public static void main(String[] args) {
         try {
@@ -42,7 +42,8 @@ public class RestFeedsServer {
             //Launches HTTP server in a separate thread
             JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
 
-            Discovery.getInstance().announce(SERVICE_NAME, serverURI);
+            discovery = Discovery.getInstance();
+            discovery.announce(SERVICE_NAME, serverURI);
 
             //TODO: Add Discovery
             Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));

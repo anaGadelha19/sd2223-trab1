@@ -1,5 +1,6 @@
 package sd2223.trab1.server.rest;
 
+import jakarta.inject.Singleton;
 import sd2223.trab1.api.Message;
 import sd2223.trab1.api.User;
 import sd2223.trab1.api.java.Feeds;
@@ -8,13 +9,14 @@ import sd2223.trab1.server.java.JavaFeeds;
 
 import java.util.List;
 
+@Singleton
 public class RestFeedsResource extends RestResource implements FeedsService {
 
     final Feeds impl;
 
     //TODO: deve ter erros
     public RestFeedsResource() throws InterruptedException {
-        this.impl = new JavaFeeds(RestFeedsServer.SERVICE_NAME, RestFeedsServer.discovery);
+        this.impl = new JavaFeeds(RestUsersServer.SERVICE_NAME, RestFeedsServer.discovery);
     }
 
     @Override

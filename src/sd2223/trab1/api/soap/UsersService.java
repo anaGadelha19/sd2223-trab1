@@ -55,7 +55,7 @@ public interface UsersService {
      * @throws UsersException otherwise
      */
     @WebMethod
-    User deleteUser(String name, String pwd) throws UsersException;
+    User deleteUser(String name, String pwd) throws UsersException, InterruptedException;
 
     /**
      * Returns the list of users for which the pattern is a substring of the name (of the user), case-insensitive.

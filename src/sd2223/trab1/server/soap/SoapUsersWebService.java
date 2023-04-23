@@ -47,7 +47,7 @@ public class SoapUsersWebService extends SoapWebService<UsersException> implemen
     }
 
     @Override
-    public User deleteUser(String name, String pwd) throws UsersException {
+    public User deleteUser(String name, String pwd) throws UsersException, InterruptedException {
         return super.fromJavaResult(impl.deleteUser(name, pwd));
     }
 

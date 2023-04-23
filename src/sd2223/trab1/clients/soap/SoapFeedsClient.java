@@ -7,8 +7,6 @@ import sd2223.trab1.api.User;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.java.Result;
 import sd2223.trab1.api.soap.FeedsService;
-
-
 import javax.xml.namespace.QName;
 import java.net.URI;
 import java.util.List;
@@ -60,7 +58,8 @@ public class SoapFeedsClient extends SoapClient implements Feeds {
 
     @Override
     public Result<Void> subUser(String user, String userSub, String pwd) {
-        return super.reTry(() -> super.toJavaResult(() -> stub().subUser(user, userSub, pwd)));
+        return null;
+        //return super.reTry(() -> super.toJavaResult(() -> stub().subUser(user, userSub, pwd)));
 
     }
 

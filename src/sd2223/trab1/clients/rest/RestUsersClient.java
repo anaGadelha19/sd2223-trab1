@@ -137,6 +137,7 @@ public class RestUsersClient extends RestClient implements Users {
     @Override
     public boolean hasUser(String user) {
         // TODO: O QUE FAZER AQUI??
+
         return false;
     }
 }

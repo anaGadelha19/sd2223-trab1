@@ -16,7 +16,7 @@ public class RestUsersResource extends RestResource implements UsersService {
 
     //TODO: deve ter erros
     public RestUsersResource() {
-        this.impl = new JavaUsers(RestUsersServer.SERVICE_NAME, RestUsersServer.discovery);
+        this.impl = new JavaUsers(RestFeedsServer.SERVICE_NAME, RestUsersServer.discovery);
     }
 
     @Override

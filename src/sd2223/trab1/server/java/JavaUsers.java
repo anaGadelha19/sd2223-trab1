@@ -50,7 +50,7 @@ public class JavaUsers implements Users {
             Log.info("User already exists.");
             return Result.error(ErrorCode.CONFLICT);
         }
-        //TODO: Maybe change this?
+
         return Result.ok(user.getName() + "@" + user.getDomain());
     }
 
@@ -119,7 +119,7 @@ public class JavaUsers implements Users {
 
         Log.info("deleteUser : user = " + name + "; pwd = " + pwd);
 
-        feeds = UsersClientFactory.getFeedService(discovery.knownUrisOf(serviceName, 5)[0]);
+        feeds = UsersClientFactory.getFeedService(discovery.knownUrisOf(serviceName, 1)[0]);
 
         User user;
         //getUser method checks the BAD_REQUEST, NOT_FOUND and FORBIDDEN exceptions

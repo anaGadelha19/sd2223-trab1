@@ -23,14 +23,14 @@ public class JavaFeeds implements Feeds {
 //TODO: Complete this Class
 
     //TODO: Esta bom a variavel feeds?
-    //Map<name@domain, HashMap<messageId, Message>> feeds
-    private final Map<String, HashMap<Long, Message>> feeds = new ConcurrentHashMap<>();
+    //ConcurrentHashMap<name@domain, ConcurrentHashMap<messageId, Message>> feeds
+    private final Map<String, Map<Long, Message>> feeds = new ConcurrentHashMap<>();
 
     private final Map<User, LinkedList<String>> subscribers = new ConcurrentHashMap<>();
 
     private static Logger Log = Logger.getLogger(RestUsersServer.class.getName());
 
-    private AtomicLong messagesIdGenerator = new AtomicLong(0);
+    private AtomicLong messagesIdGenerator = new AtomicLong(-1);
 
     private Users users;
 
@@ -41,7 +41,7 @@ public class JavaFeeds implements Feeds {
         this.serviceName = serviceName;
         this.discovery = discovery;
 
-        URI[] usersUris = discovery.knownUrisOf(serviceName, 5);
+        URI[] usersUris = discovery.knownUrisOf(serviceName, 1);
         users = UsersClientFactory.getUserService(usersUris[0]);
     }
 
@@ -53,6 +53,7 @@ public class JavaFeeds implements Feeds {
 
         User u;
         Result<User> getRes = users.getUser(userSplit[0], pwd);
+
         if(getRes.isOK())
             u = getRes.value();
         else{
@@ -70,15 +71,17 @@ public class JavaFeeds implements Feeds {
             return Result.error(ErrorCode.FORBIDDEN);
         }
 
-        long mid = messagesIdGenerator.incrementAndGet();
+        messagesIdGenerator.incrementAndGet();
+        long mid = messagesIdGenerator.get();
         Message newMsg = new Message(mid, userSplit[0], userSplit[1], msg.getText());
 
         addMessageToFeed(user, mid, newMsg);
 
-        for (String sub : subscribers.get(u)) {
-            addMessageToFeed(sub, mid, newMsg);
+        if(subscribers.get(u) != null) {
+            for (String sub : subscribers.get(u)) {
+                addMessageToFeed(sub, mid, newMsg);
+            }
         }
-
         return Result.ok(mid);
     }
 
@@ -110,7 +113,7 @@ public class JavaFeeds implements Feeds {
     public Result<Message> getMessage(String user, long mid) {
         Log.info("getMessage : user = " + user + "; messageId = " + mid);
 
-        if (!users.hasUser(user)) {
+        if (feeds.get(user) == null) {
             Log.info("User does not exist.");
             return Result.error(ErrorCode.NOT_FOUND);
 
@@ -149,12 +152,8 @@ public class JavaFeeds implements Feeds {
     }
 
     private void addMessageToFeed(String user, long mid, Message msg) {
-        // Checks if the user has already a "feed"
-        if (feeds.get(user) == null) {
-            feeds.put(user, new HashMap<>());
-        }
-        // Adds the message to the feed
-        feeds.get(user).put(mid, msg);
+        feeds.putIfAbsent(user, new ConcurrentHashMap<>());
+        feeds.get(user).putIfAbsent(mid, msg);
     }
 }
 
