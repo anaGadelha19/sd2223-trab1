@@ -21,11 +21,10 @@ import java.util.List;
 
 public class RestFeedsClient extends RestClient implements Feeds {
 
-    //TODO: Retry methods, clt_methods
     final WebTarget target;
 
 
-    RestFeedsClient(URI serverURI, WebTarget target) {
+    public RestFeedsClient(URI serverURI) {
         super(serverURI);
         this.target = client.target(serverURI).path(UsersService.PATH);
         ;

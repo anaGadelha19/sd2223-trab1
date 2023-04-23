@@ -44,8 +44,7 @@ public class RestUsersServer {
             //TODO: Add Discovery
             Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));
 
-
-            //discovery = new Discovery(new InetSocketAddress("227.227.227.227", 2277), SERVICE_NAME, serverURI);
+            Discovery.getInstance().announce(SERVICE, serverURI);
             //discovery.announce(serviceName, serviceURI);
             //discovery.;
             // More code can be executed here...

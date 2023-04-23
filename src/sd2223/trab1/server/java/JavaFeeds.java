@@ -6,11 +6,14 @@ import sd2223.trab1.api.Message;
 import sd2223.trab1.api.User;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.java.Result;
+import sd2223.trab1.api.java.Users;
+import sd2223.trab1.clients.UsersClientFactory;
 import sd2223.trab1.clients.rest.RestUsersClient;
 import sd2223.trab1.server.rest.RestUsersServer;
 import sd2223.trab1.api.java.Result.ErrorCode;
 
 
+import java.net.URI;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -30,14 +33,20 @@ public class JavaFeeds implements Feeds {
 
     private static Logger Log = Logger.getLogger(RestUsersServer.class.getName());
 
-    private JavaUsers usrRes = new JavaUsers(); // sera assim??
-
     private AtomicLong messagesIdGenerator = new AtomicLong(0);
 
-    private RestUsersClient restUsersClient; // TODO: add get ethod from factory
+    private Users users;
 
-    private Discovery discovery = Discovery.getInstance();
+    private final String serviceName;
+    private final Discovery discovery;
 
+    public JavaFeeds(String serviceName, Discovery discovery) throws InterruptedException {
+        this.serviceName = serviceName;
+        this.discovery = discovery;
+
+        URI[] usersUris = discovery.knownUrisOf(serviceName, 5);
+        users = UsersClientFactory.get(usersUris[0]);
+    }
 
     @Override
     public Result<Long> postMessage(String user, String pwd, Message msg) {
@@ -46,7 +55,7 @@ public class JavaFeeds implements Feeds {
         String[] userSplit = user.split("@");
 
         User u;
-        Result<User> getRes = usrRes.getUser(userSplit[0], pwd);
+        Result<User> getRes = users.getUser(userSplit[0], pwd);
         if(getRes.isOK())
             u = getRes.value();
         else{
@@ -70,18 +79,8 @@ public class JavaFeeds implements Feeds {
         addMessageToFeed(user, mid, newMsg);
 
         for (String sub : subscribers.get(u)) {
-            if (sub.contains(userSplit[1])) {
-                addMessageToFeed(sub, mid, newMsg);
-            } else {
-                //URI[] uris = discovery.knownUrisOf(RestUsersServer.SERVICE, 1);
-
-                   /* for(URI uri: uris){
-                        String responseSub;
-                    }*/
-                // TODO: use discovery?!?!
-            }
+            addMessageToFeed(sub, mid, newMsg);
         }
-
 
         return Result.ok(mid);
     }
@@ -96,7 +95,7 @@ public class JavaFeeds implements Feeds {
     public Result<Message> getMessage(String user, long mid) {
         Log.info("getMessage : user = " + user + "; messageId = " + mid);
 
-        if (!usrRes.hasUser(user)) { // sera assim??
+        if (!users.hasUser(user)) { // sera assim??
             Log.info("User does not exist.");
             return Result.error(ErrorCode.NOT_FOUND);
 
