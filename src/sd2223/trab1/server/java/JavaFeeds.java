@@ -47,13 +47,12 @@ public class JavaFeeds implements Feeds {
 
     @Override
     public Result<Long> postMessage(String user, String pwd, Message msg) {
-        Log.info("postMessage : user = " + user + "password = " + pwd + "; message = " + msg);
+        Log.info("postMessage : user = " + user + " password = " + pwd + "; message = " + msg);
 
         String[] userSplit = user.split("@");
 
         User u;
         Result<User> getRes = users.getUser(userSplit[0], pwd);
-
         if(getRes.isOK())
             u = getRes.value();
         else{
@@ -131,7 +130,23 @@ public class JavaFeeds implements Feeds {
 
     @Override
     public Result<List<Message>> getMessages(String user, long time) {
-        return null;
+        Log.info("getMessages : user = " + user + "; time = " + time);
+
+        //TODO: I do not know if it is 100% in accordance with what is requested
+        if (feeds.get(user) == null) {
+            Log.info("User either does not exist or has no messages.");
+            return Result.error(ErrorCode.NOT_FOUND);
+
+        }
+
+        List<Message> msgList = new LinkedList<>();
+        for(Message msg: feeds.get(user).values()) {
+            if (msg.getCreationTime() >= time) {
+                msgList.add(msg);
+            }
+        }
+
+        return Result.ok(msgList);
     }
 
     @Override
