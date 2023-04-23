@@ -3,6 +3,7 @@ package sd2223.trab1.clients.soap;
 import jakarta.xml.ws.BindingProvider;
 import jakarta.xml.ws.Service;
 import sd2223.trab1.api.Message;
+import sd2223.trab1.api.User;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.java.Result;
 import sd2223.trab1.api.soap.FeedsService;
@@ -38,6 +39,11 @@ public class SoapFeedsClient extends SoapClient implements Feeds {
     public Result<Void> removeFromPersonalFeed(String user, long mid, String pwd) {
         return super.reTry(() -> super.toJavaResult(() -> stub().removeFromPersonalFeed(user, mid, pwd)));
 
+    }
+
+    @Override
+    public Result<Void> removeDeletedUserFeed(User user) {
+        return super.reTry(() -> super.toJavaResult(() -> stub().removeDeletedUserFeed(user)));
     }
 
     @Override

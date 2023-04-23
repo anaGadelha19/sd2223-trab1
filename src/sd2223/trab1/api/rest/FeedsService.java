@@ -61,6 +61,16 @@ public interface FeedsService {
 	void removeFromPersonalFeed(@PathParam(USER) String user, @PathParam(MID) long mid, @QueryParam(PWD) String pwd);
 
 	/**
+	 * Removes the messages and feed of the user.
+	 *
+	 * @param user user feed and messages being accessed
+	 *
+	 */
+	@DELETE
+	@Path("/")
+	void removeDeletedUserFeed(User user);
+
+	/**
 	 * Obtains the message with id from the feed of user (may be a remote user)
 	 * 
 	 * @param user user feed being accessed (format user@domain)

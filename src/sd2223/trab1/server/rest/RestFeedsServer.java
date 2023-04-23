@@ -17,7 +17,7 @@ public class RestFeedsServer {
     private static Logger Log = Logger.getLogger(RestFeedsServer.class.getName());
 
     static final InetSocketAddress DISCOVERY_ADDR = new InetSocketAddress("226.226.226.226", 2266);
-    public static Discovery discovery;
+
 
     static {
         System.setProperty("java.net.preferIPv4Stack", "true");
@@ -25,7 +25,10 @@ public class RestFeedsServer {
 
     public static final int PORT = 8080;
     public static final String SERVICE = "FeedsService";
+    public static final String SERVICE_NAME = "feeds";
     private static final String SERVER_URI_FMT = "http://%s:%s/rest";
+
+    public static Discovery discovery = null;
 
     public static void main(String[] args) {
         try {
@@ -39,6 +42,7 @@ public class RestFeedsServer {
             //Launches HTTP server in a separate thread
             JdkHttpServerFactory.createHttpServer(URI.create(serverURI), config);
 
+            Discovery.getInstance().announce(SERVICE_NAME, serverURI);
 
             //TODO: Add Discovery
             Log.info(String.format("%s Server ready @ %s\n", SERVICE, serverURI));

@@ -3,6 +3,7 @@ package sd2223.trab1.api.soap;
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebService;
 import sd2223.trab1.api.Message;
+import sd2223.trab1.api.User;
 import sd2223.trab1.api.java.Result;
 
 import java.util.List;
@@ -21,6 +22,9 @@ public interface FeedsService {
 
     @WebMethod
     void removeFromPersonalFeed(String user, long mid, String pwd) throws FeedsException;
+
+    @WebMethod
+    void removeDeletedUserFeed(User user) throws FeedsException;
 
     @WebMethod
     Message getMessage(String user, long mid) throws FeedsException;

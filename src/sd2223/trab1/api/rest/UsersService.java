@@ -82,7 +82,7 @@ public interface UsersService {
 	@DELETE
 	@Path("/{" + NAME+ "}")
 	@Produces(MediaType.APPLICATION_JSON)
-	User deleteUser(@PathParam(NAME) String name, @QueryParam(PWD) String pwd);
+	User deleteUser(@PathParam(NAME) String name, @QueryParam(PWD) String pwd) throws InterruptedException;
 	
 	/**
 	 * Returns the list of users for which the pattern is a substring of the name

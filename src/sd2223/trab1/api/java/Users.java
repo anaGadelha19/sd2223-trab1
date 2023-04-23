@@ -14,7 +14,7 @@ public interface Users {
 
     Result<User> updateUser(String name, String pwd, User user);
 
-    Result<User> deleteUser(String name, String pwd);
+    Result<User> deleteUser(String name, String pwd) throws InterruptedException;
 
     Result<List<User>> searchUsers(String pattern);
 

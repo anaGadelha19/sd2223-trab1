@@ -1,6 +1,7 @@
 package sd2223.trab1.server.rest;
 
 import sd2223.trab1.api.Message;
+import sd2223.trab1.api.User;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.rest.FeedsService;
 import sd2223.trab1.server.java.JavaFeeds;
@@ -11,8 +12,9 @@ public class RestFeedsResource extends RestResource implements FeedsService {
 
     final Feeds impl;
 
-    public RestFeedsResource() {
-        this.impl = new JavaFeeds();
+    //TODO: deve ter erros
+    public RestFeedsResource() throws InterruptedException {
+        this.impl = new JavaFeeds(RestFeedsServer.SERVICE_NAME, RestFeedsServer.discovery);
     }
 
     @Override
@@ -24,6 +26,11 @@ public class RestFeedsResource extends RestResource implements FeedsService {
     public void removeFromPersonalFeed(String user, long mid, String pwd) {
         super.fromJavaResult(impl.removeFromPersonalFeed(user, mid, pwd));
 
+    }
+
+    @Override
+    public void removeDeletedUserFeed(User user) {
+        super.fromJavaResult(impl.removeDeletedUserFeed(user));
     }
 
     @Override

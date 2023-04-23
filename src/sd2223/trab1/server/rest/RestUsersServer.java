@@ -27,6 +27,8 @@ public class RestUsersServer {
     public static final String SERVICE_NAME = "users";
     private static final String SERVER_URI_FMT = "http://%s:%s/rest";
 
+    public static Discovery discovery = null;
+
     public static void main(String[] args) {
         try {
             //Used to register resources in a server

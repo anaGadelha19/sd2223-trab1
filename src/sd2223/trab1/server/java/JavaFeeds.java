@@ -14,10 +14,7 @@ import sd2223.trab1.api.java.Result.ErrorCode;
 
 
 import java.net.URI;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.logging.Logger;
@@ -92,10 +89,28 @@ public class JavaFeeds implements Feeds {
     }
 
     @Override
+    public Result<Void> removeDeletedUserFeed(User user) {
+        Log.info("removeDeletedUserFeed : user = " + user.getName());
+
+        LinkedList<String> followers = subscribers.get(user);
+        Set<Long> userMessagesId = feeds.get(user.getName()).keySet();
+
+        for(String name: followers){
+            for(Long mid: userMessagesId){
+                feeds.get(name).remove(mid);
+            }
+        }
+
+        feeds.remove(user.getName() + "@" + user.getDomain());
+
+        return Result.ok();
+    }
+
+    @Override
     public Result<Message> getMessage(String user, long mid) {
         Log.info("getMessage : user = " + user + "; messageId = " + mid);
 
-        if (!users.hasUser(user)) { // sera assim??
+        if (!users.hasUser(user)) {
             Log.info("User does not exist.");
             return Result.error(ErrorCode.NOT_FOUND);
 

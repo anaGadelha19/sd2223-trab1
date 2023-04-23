@@ -14,8 +14,9 @@ public class RestUsersResource extends RestResource implements UsersService {
     //TODO: Check hasUsers idk
     final Users impl;
 
+    //TODO: deve ter erros
     public RestUsersResource() {
-        this.impl = new JavaUsers();
+        this.impl = new JavaUsers(RestUsersServer.SERVICE_NAME, RestUsersServer.discovery);
     }
 
     @Override
@@ -39,7 +40,7 @@ public class RestUsersResource extends RestResource implements UsersService {
     }
 
     @Override
-    public User deleteUser(String name, String pwd) {
+    public User deleteUser(String name, String pwd) throws InterruptedException {
         return super.fromJavaResult(impl.deleteUser(name, pwd));
     }
 

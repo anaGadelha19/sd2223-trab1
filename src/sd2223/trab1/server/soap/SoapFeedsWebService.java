@@ -1,6 +1,7 @@
 package sd2223.trab1.server.soap;
 
 import sd2223.trab1.api.Message;
+import sd2223.trab1.api.User;
 import sd2223.trab1.api.java.Feeds;
 import sd2223.trab1.api.soap.FeedsException;
 import sd2223.trab1.api.soap.FeedsService;
@@ -27,6 +28,11 @@ public class SoapFeedsWebService extends SoapWebService<FeedsException> implemen
     @Override
     public void removeFromPersonalFeed(String user, long mid, String pwd) throws FeedsException {
         super.fromJavaResult(impl.removeFromPersonalFeed(user, mid, pwd));
+    }
+
+    @Override
+    public void removeDeletedUserFeed(User user) throws FeedsException {
+        super.fromJavaResult(impl.removeDeletedUserFeed(user));
     }
 
     @Override
