@@ -6,6 +6,11 @@ import java.util.List;
 
 import jakarta.jws.WebMethod;
 import jakarta.jws.WebService;
+import jakarta.ws.rs.GET;
+import jakarta.ws.rs.Path;
+import jakarta.ws.rs.PathParam;
+import jakarta.ws.rs.Produces;
+import jakarta.ws.rs.core.MediaType;
 import sd2223.trab1.api.User;
 
 @WebService(serviceName = UsersService.NAME, targetNamespace = UsersService.NAMESPACE, endpointInterface = UsersService.INTERFACE)
@@ -27,8 +32,8 @@ public interface UsersService {
     /**
      * Obtains the information on the user identified by name.
      *
-     * @param name     name of the user
-     * @param pwd password of the user
+     * @param name name of the user
+     * @param pwd  password of the user
      * @throws UsersException otherwise
      */
     @WebMethod
@@ -67,8 +72,8 @@ public interface UsersService {
     @WebMethod
     List<User> searchUsers(String pattern) throws UsersException;
 
+  /*  @WebMethod
+    User getUserByName(String name) throws UsersException;*/
 
-    @WebMethod
-    void verifyPassword(String name, String pwd) throws UsersException;
 }
 

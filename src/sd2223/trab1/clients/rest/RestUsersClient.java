@@ -104,6 +104,20 @@ public class RestUsersClient extends RestClient implements Users {
         }
     }
 
+    private Result<User> clt_getUserByName(String name) {
+
+        Response r = target.path("byName/" + name).request()
+                .accept(MediaType.APPLICATION_JSON)
+                .get();
+
+        if (r.getStatus() == Response.Status.OK.getStatusCode() && r.hasEntity()) {
+            return super.toJavaResult(r, User.class);
+        } else {
+            System.out.println("Error, HTTP error status: " + r.getStatus());
+            return null;
+        }
+    }
+
     @Override
     public Result<String> createUser(User user) {
         return super.reTry(() -> clt_createUser(user));
@@ -129,16 +143,16 @@ public class RestUsersClient extends RestClient implements Users {
         return super.reTry(() -> clt_searchUsers(pattern));
     }
 
-    @Override
-    public Result<Void> verifyPassword(String name, String pwd) {
-        return null;
+  /*  @Override
+    public Result<User> getUserByName(String name) {
+        return super.reTry(() -> clt_getUserByName(name));
     }
 
-    @Override
+   /* @Override
     public boolean hasUser(String user) {
         // TODO: O QUE FAZER AQUI??
 
-        return false;
-    }
+        return ;
+    }*/
 }
 

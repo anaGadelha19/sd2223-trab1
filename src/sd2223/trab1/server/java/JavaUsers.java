@@ -62,7 +62,6 @@ public class JavaUsers implements Users {
         if (name == null || pwd == null) {
             Log.info("Name or Password null.");
             return Result.error(ErrorCode.BAD_REQUEST);
-
         }
 
         User user = users.get(name);
@@ -152,16 +151,27 @@ public class JavaUsers implements Users {
         return Result.ok(usersList);
     }
 
-    @Override
-    public Result<Void> verifyPassword(String name, String pwd) {
-        return null;
-    }
+   /* @Override
+    public Result<User> getUserByName(String name) {
+        Log.info("getUser : user = " + name);
 
-    @Override
-    public boolean hasUser(String user) {
+        User user = users.get(name);
+
+        if (user == null) {// Check if user exists
+            Log.info("User does not exist.");
+            return Result.error(ErrorCode.NOT_FOUND);
+        } else {
+            return Result.ok(user);
+        }
+
+    }*/
+
+    //  @Override
+   private boolean hasUser(String user) {
         String[] aux = user.split("@");
         return users.get(aux[0]) != null;
     }
+
 
 }
 

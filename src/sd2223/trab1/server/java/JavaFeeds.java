@@ -26,7 +26,11 @@ public class JavaFeeds implements Feeds {
     //ConcurrentHashMap<name@domain, ConcurrentHashMap<messageId, Message>> feeds
     private final Map<String, Map<Long, Message>> feeds = new ConcurrentHashMap<>();
 
-    private final Map<User, LinkedList<String>> subscribers = new ConcurrentHashMap<>();
+    // User -> user that has a linkedList of subscribers
+    private final Map<String, LinkedList<String>> subscribers = new ConcurrentHashMap<>();
+
+    //User -> user that has a linkedList of users that were subscribed by the user
+    private final Map<String, LinkedList<String>> subscribedTo = new ConcurrentHashMap<>();
 
     private static Logger Log = Logger.getLogger(RestUsersServer.class.getName());
 
@@ -53,14 +57,17 @@ public class JavaFeeds implements Feeds {
 
         User u;
         Result<User> getRes = users.getUser(userSplit[0], pwd);
-        if(getRes.isOK())
-            u = getRes.value();
-        else{
+
+        //  TODO: VERIFY this
+        if (getRes == null || !getRes.isOK()) {//TODO: verify if user exists? ????
             Log.info("User does not exist.");
             return Result.error(ErrorCode.FORBIDDEN);
+        } else {
+            u = getRes.value();
+
         }
 
-        if(!u.getPwd().equals(pwd)){
+        if (!u.getPwd().equals(pwd)) {
             Log.info("Password is incorrect.");
             return Result.error(ErrorCode.FORBIDDEN);
         }
@@ -76,7 +83,7 @@ public class JavaFeeds implements Feeds {
 
         addMessageToFeed(user, mid, newMsg);
 
-        if(subscribers.get(u) != null) {
+        if (subscribers.get(u) != null) {
             for (String sub : subscribers.get(u)) {
                 addMessageToFeed(sub, mid, newMsg);
             }
@@ -86,8 +93,40 @@ public class JavaFeeds implements Feeds {
 
     @Override
     public Result<Void> removeFromPersonalFeed(String user, long mid, String pwd) {
+        Log.info("removeFromPersonalFeed : user = " + user + " password = " + pwd + "; messageId = " + mid);
 
-        return null;
+        String[] userSplit = user.split("@");
+
+        User u;
+        Result<User> getRes = users.getUser(userSplit[0], pwd);
+
+        // If the user does not exist
+        if (getRes.isOK())
+            u = getRes.value();
+        else {
+            Log.info("User does not exist.");
+            return Result.error(ErrorCode.FORBIDDEN);
+        }
+
+        // If password is incorrect
+        if (!u.getPwd().equals(pwd)) {
+            Log.info("Password is incorrect.");
+            return Result.error(ErrorCode.FORBIDDEN);
+        }
+
+        //If the message does not exist
+        Result<Message> msg = getMessage(user, mid);
+        if (!msg.isOK()) {
+            Log.info("Message does not exist.");
+            return Result.error(ErrorCode.NOT_FOUND);
+
+        } else {
+            feeds.get(user).remove(mid);
+            Log.info("Message removed successfully");
+            return Result.ok();
+        }
+
+
     }
 
     @Override
@@ -97,8 +136,8 @@ public class JavaFeeds implements Feeds {
         LinkedList<String> followers = subscribers.get(user);
         Set<Long> userMessagesId = feeds.get(user.getName()).keySet();
 
-        for(String name: followers){
-            for(Long mid: userMessagesId){
+        for (String name : followers) {
+            for (Long mid : userMessagesId) {
                 feeds.get(name).remove(mid);
             }
         }
@@ -111,7 +150,7 @@ public class JavaFeeds implements Feeds {
     @Override
     public Result<Message> getMessage(String user, long mid) {
         Log.info("getMessage : user = " + user + "; messageId = " + mid);
-
+//TODO: verify if user exists?
         if (feeds.get(user) == null) {
             Log.info("User does not exist.");
             return Result.error(ErrorCode.NOT_FOUND);
@@ -131,7 +170,7 @@ public class JavaFeeds implements Feeds {
     @Override
     public Result<List<Message>> getMessages(String user, long time) {
         Log.info("getMessages : user = " + user + "; time = " + time);
-
+//TODO: verify if user exists?
         //TODO: I do not know if it is 100% in accordance with what is requested
         if (feeds.get(user) == null) {
             Log.info("User either does not exist or has no messages.");
@@ -140,7 +179,7 @@ public class JavaFeeds implements Feeds {
         }
 
         List<Message> msgList = new LinkedList<>();
-        for(Message msg: feeds.get(user).values()) {
+        for (Message msg : feeds.get(user).values()) {
             if (msg.getCreationTime() >= time) {
                 msgList.add(msg);
             }
@@ -151,24 +190,102 @@ public class JavaFeeds implements Feeds {
 
     @Override
     public Result<Void> subUser(String user, String userSub, String pwd) {
+        Log.info("subUser : user = " + user + "; userSub = " + userSub + "; pwd = " + pwd);
 
-        return null;
+
+        String[] userSplit = user.split("@");
+        //String[] userSubSplit = userSub.split("@");
+
+        User u;
+        Result<User> getUser = users.getUser(userSplit[0], pwd);
+
+        // If the user does not exist
+        if (getUser.isOK())
+            u = getUser.value();
+        else {
+            Log.info("User does not exist.");
+            return Result.error(ErrorCode.FORBIDDEN);
+        }
+
+        // If password is incorrect
+        if (!u.getPwd().equals(pwd)) {
+            Log.info("Password is incorrect.");
+            return Result.error(ErrorCode.FORBIDDEN);
+        }
+
+        //If user to be subscribed does not exist //TODO: verify this
+       /* if (users.getUserByName(userSub) == null) {
+            Log.info("User to be subscribe does not exist.");TODO: verify if user exists?
+            return Result.error(ErrorCode.FORBIDDEN);
+        }*/
+
+        // Add to the map of the users that subscribed the userSub
+        if (subscribedTo.get(user) != null) {
+            subscribedTo.get(user).add(userSub);
+        } else {
+            LinkedList<String> firstSubscriber = new LinkedList<>();
+            firstSubscriber.add(userSub);
+            subscribedTo.put(user, firstSubscriber);
+        }
+
+        // Add to the map of the subscribers of the userSub
+        if (subscribers.get(userSub) != null) {
+            //Adding user to the userSub list of subscribers
+            subscribers.get(userSub).add(user);
+            Log.info("Subscribers IF IT EXISTSSS" + subscribers.get(userSub));
+
+        } else {
+            // When it is the first subscriber we create a new list and add the first one
+            LinkedList<String> firstSubscriber = new LinkedList<>();
+            firstSubscriber.add(user);
+            subscribers.put(userSub, firstSubscriber);
+
+            Log.info("Subscribers IF DIDNT EXIST" + subscribers.get(userSub));
+        }
+
+        return Result.ok();
     }
 
     @Override
     public Result<Void> unsubscribeUser(String user, String userSub, String pwd) {
+
 
         return null;
     }
 
     @Override
     public Result<List<String>> listSubs(String user) {
-        return null;
+        Log.info("listSubs : user = " + user);
+        /*String[] userSplit = user.split("@"); //TODO: verify if user exists?
+        //String[] userSubSplit = userSub.split("@");
+
+        Result<User> getUser = users.getUser(userSplit[0], "");
+
+        // If the user does not exist
+        if (getUser == null || !getUser.isOK()) {
+            Log.info("User does not exist.");
+            return Result.error(ErrorCode.FORBIDDEN);
+        }
+*/
+        if (subscribedTo.get(user) == null) {
+            Log.info("User does not have subscribers.");
+            return Result.ok(subscribedTo.get(user));
+        }
+
+        return Result.ok(subscribedTo.get(user));
     }
 
     private void addMessageToFeed(String user, long mid, Message msg) {
         feeds.putIfAbsent(user, new ConcurrentHashMap<>());
         feeds.get(user).putIfAbsent(mid, msg);
+    }
+
+    private boolean hasUser(String user) {
+
+        Log.info("final User = " + users.getUser(user, ""));
+
+        var result = users.getUser(user, "");
+        return result.error() == ErrorCode.FORBIDDEN;
     }
 }
 
